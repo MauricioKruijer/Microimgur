@@ -70,7 +70,10 @@ $image = $_FILES['image'];
 if (isset($image['size']) && $image['size'] > MAX_FILE_SIZE)
 {
   showResult([
-    'error' => _(sprintf('This file is too big (%s), max file size is: %s', human_filesize($image['size']) ,human_filesize(MAX_FILE_SIZE))),
+    'error' => _(sprintf(
+      'This file is too big (%s), max file size is: %s',
+      human_filesize($image['size']),
+      human_filesize(MAX_FILE_SIZE))),
   ]);
 }
 
@@ -111,7 +114,7 @@ if (move_uploaded_file($image['tmp_name'], $filename))
 {
   showResult([
     'image' => [
-      'src' => str_replace('.', '', $filename),
+      'src' => str_replace('./', '/', $filename),
     ],
   ]);
 }
