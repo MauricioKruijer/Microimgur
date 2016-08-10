@@ -1,0 +1,40 @@
+html, body {
+    padding: 0px;
+    margin: 0px;
+}
+body {
+    background: #2a2b2c;
+    color: #f2f3f4;
+}
+
+#topBar {
+    height: 50px;
+    background: #343536;
+    box-shadow: 0 0 11px 1px #111;
+    text-align: center;
+}
+
+#replyBox {
+    text-align: center;
+}
+
+.wrapper {
+    margin: 0 auto;
+    width: 730px;
+}
+
+.pt-m {
+    padding-top: 15px;
+}
+
+.mt-m {
+    margin-top: 15px;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}

@@ -1,0 +1,39 @@
+<!doctype html>
+<html class="no-js" lang="">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <div id="topBar">
+    <div class="wrapper">
+      <span class="pt-m left">Posts: {{ posts }}</span>
+      <button class="mt-m">export</button>
+      <span class="pt-m right">Views: {{ views }}</span>
+    </div>
+  </div>
+
+  <div class="wrapper">
+    <div id="replyBox">
+      <form action="/upload" method="post" enctype="multipart/form-data">
+        <p>
+          <input type="text" placeholder="Maybe give it a title?"/>
+        </p>
+        <p>
+          <input type="file" value="Upload image"/>
+        </p>
+      </form>
+    </div>
+
+    <section>
+      <h2>{{ image.title }}</h2>
+      <img src="{{ image.src }}" alt="{{ image.title }}"/>
+    </section>
+  </div>
+</body>
+</html>
