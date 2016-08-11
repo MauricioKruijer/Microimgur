@@ -3,12 +3,17 @@ if (!extension_loaded('curl'))
 {
   trigger_error('Extension CURL is not loaded.', E_USER_ERROR);
 }
-function firebase($data, $resource = 'files', $mode = 'POST')
+function firebase($data, $resource = 'files', $mode = 'POST', $query = [])
 {
   $url      = sprintf('https://woepla-727f7.firebaseio.com/%s.json', $resource);
   $timeout  = 10;
   $ch       = curl_init();
   $jsonData = json_encode($data);
+
+  if (!empty($query))
+  {
+    $url .= '?' . http_build_query($query);
+  }
 
   $header = array(
     'Content-Type: application/json',
