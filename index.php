@@ -1,3 +1,8 @@
+<?php
+require_once 'firebase.php';
+$viewCount = firebase([], 'analytics/page_views', 'GET');
+firebase(['page_views' => ++$viewCount], 'analytics', 'PATCH');
+?>
 <!doctype html>
 <html class="no-js" lang="">
 <head>
@@ -41,6 +46,19 @@
     uploadElem.onchange = function () {
       uploadElem.form.submit();
     }
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/3.2.1/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyCtPjk3502PFHUW0-SvbUWE7-qZ56Nn6Qw",
+      authDomain: "woepla-727f7.firebaseapp.com",
+      databaseURL: "https://woepla-727f7.firebaseio.com",
+      storageBucket: "woepla-727f7.appspot.com",
+    };
+    firebase.initializeApp(config);
+
+    var database = firebase.database();
   </script>
 </body>
 </html>
