@@ -76,6 +76,15 @@ if (($fileInfo = @getimagesize($image['tmp_name'])) == false)
   ]);
 }
 
+if ($fileInfo[0] > MAX_IMAGE_WIDTH && $fileInfo[1] > MAX_IMAGE_HEIGHT)
+{
+  showResult([
+    'error' => [
+      'message' => _('Image resolution is to large'),
+    ]
+  ]);
+}
+
 if (!isset($fileInfo['mime']) || !in_array($fileInfo['mime'], ['image/jpeg', 'image/jpg']))
 {
   showResult([
