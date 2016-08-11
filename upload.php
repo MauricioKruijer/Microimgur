@@ -67,6 +67,24 @@ if (!isset($_FILES['image']))
 
 $image = $_FILES['image'];
 
+if (($fileInfo = @getimagesize($image['tmp_name'])) == false)
+{
+  showResult([
+    'error' => [
+      'message' => _('File info is not available, could not check image'),
+    ],
+  ]);
+}
+
+if (!isset($fileInfo['mime']) || !in_array($fileInfo['mime'], ['image/jpeg', 'image/jpg']))
+{
+  showResult([
+    'error' => [
+      'message' => gettext('Type not supported'),
+    ],
+  ]);
+}
+
 if (isset($image['size']) && $image['size'] > MAX_FILE_SIZE)
 {
   showResult([
@@ -74,15 +92,6 @@ if (isset($image['size']) && $image['size'] > MAX_FILE_SIZE)
       'This file is too big (%s), max file size is: %s',
       human_filesize($image['size']),
       human_filesize(MAX_FILE_SIZE))),
-  ]);
-}
-
-if (!isset($image['type']) || !in_array($image['type'], ['image/jpeg', 'image/jpg']))
-{
-  showResult([
-    'error' => [
-      'message' => gettext('Type not supported'),
-    ],
   ]);
 }
 
