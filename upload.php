@@ -2,6 +2,7 @@
 define('MAX_IMAGE_WIDTH', 1920);
 define('MAX_IMAGE_HEIGHT', 1080);
 define('MAX_FILE_SIZE', 2048 * 1024);
+require_once 'firebase.php';
 
 function showResult($messages)
 {
@@ -130,9 +131,36 @@ while (file_exists($filename));
 
 if (move_uploaded_file($image['tmp_name'], $filename))
 {
-  showResult([
-    'image' => [
-      'src' => str_replace('./', '/', $filename),
-    ],
-  ]);
+  $imageUrl = str_replace('./', '/', $filename);
+
+  if ($response = firebase([
+    'title' => isset($_POST['title']) ? htmlentities($_POST['title']) : '',
+    'url'   => $imageUrl,
+  ]))
+  {
+    if (isset($response['name']) && !empty($response['name']))
+    {
+      $postCount = firebase([], 'analytics/post_count', 'GET');
+      firebase(['post_count' => ++$postCount], 'analytics', 'PATCH');
+    }
+    else
+    {
+      $postCount = 'leeeeegggg';
+    }
+    showResult([
+      'image' => [
+        'src' => $imageUrl,
+      ],
+      'firebase' => $response,
+      'postcount' => $postCount,
+    ]);
+  }
+  else
+  {
+    showResult([
+      'error' => [
+        'message' => _('Something went wrong g!'),
+      ],
+    ]);
+  }
 }
