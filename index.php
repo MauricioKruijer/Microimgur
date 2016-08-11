@@ -12,7 +12,10 @@ else
   $postCount = 0;
 }
 firebase(['page_views' => ++$viewCount], 'analytics', 'PATCH');
+
+$posts = firebase([], 'files', 'GET', ['orderBy'=> '"timestamp"']);
 ?>
+
 <!doctype html>
 <html class="no-js" lang="">
 <head>
@@ -45,15 +48,29 @@ firebase(['page_views' => ++$viewCount], 'analytics', 'PATCH');
       </form>
     </div>
 
+    <?php
+      if (!empty($posts)):
+        // Flip the array to show latest items first
+        $posts = array_reverse($posts);
+        foreach($posts as $post):
+    ?>
     <section>
-      <h2>{{ image.title }}</h2>
-      <img src="{{ image.src }}" alt="{{ image.title }}"/>
+      <?php
+        if (!empty($post['title'])):
+      ?>
+      <h2><?=$post['title']?></h2>
+      <?php
+        endif;
+      ?>
+      <img src="<?=$post['url']?>" alt="<?=$post['title']?>" width="730"/>
     </section>
+    <?php
+        endforeach;
+      endif;
+    ?>
+
   </div>
 
-  <script>
-
-  </script>
   <script src="https://www.gstatic.com/firebasejs/3.2.1/firebase.js"></script>
   <script>
     var uploadElem = document.querySelector('input[type=file]');
@@ -70,9 +87,11 @@ firebase(['page_views' => ++$viewCount], 'analytics', 'PATCH');
     };
     firebase.initializeApp(config);
 
-    var database = firebase.database();
-    var analytics = database.ref('analytics');
+    var database  = firebase.database();
+    var timestamp = +new Date;
+    timestamp     = Math.floor(timestamp / 1000);
 
+    var analytics = database.ref('analytics');
     analytics.on('value', function (snap) {
       var newSnap = snap.val();
 
@@ -81,7 +100,43 @@ firebase(['page_views' => ++$viewCount], 'analytics', 'PATCH');
 
       postsElem.innerText = postsElem.innerText.replace(/\d+/, newSnap.post_count);
       viewsElem.innerText = viewsElem.innerText.replace(/\d+/, newSnap.page_views);
-    })
+    });
+
+    var posts = database.ref('files');
+    posts.orderByChild('timestamp');
+    posts.startAt(timestamp).limitToLast(1);
+    posts.on('value', function (snap) {
+      var newPosts = snap.val();
+      for (var postId in newPosts) {
+        appendPost(newPosts[postId]);
+      }
+    });
+
+    function appendPost(post) {
+      var sectionElem = document.createElement('section');
+
+      var img = document.createElement('img');
+      img.src = post.url;
+      img.width = '720';
+      img.alt = '';
+
+      if (post.title.length > 0) {
+        var h2 = document.createElement('h2');
+        h2.innerText = post.title;
+
+        sectionElem.appendChild(h2);
+
+        img.alt = post.title;
+      }
+
+      sectionElem.appendChild(img);
+
+      insertAfter(document.getElementById('replyBox'), sectionElem);
+    }
+
+    function insertAfter(referenceNode, newNode) {
+      referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+    }
   </script>
 </body>
 </html>
