@@ -43,7 +43,7 @@ function randomKeys($length, $patternType = 'mix')
 
 function randomFilename()
 {
-  return sprintf('./uploads/%s.jpg', randomKeys(1, 'int'));
+  return sprintf('./uploads/%s.jpg', randomKeys(10, 'int'));
 }
 
 /*
@@ -82,7 +82,7 @@ if ($fileInfo[0] > MAX_IMAGE_WIDTH && $fileInfo[1] > MAX_IMAGE_HEIGHT)
   showResult([
     'error' => [
       'message' => _('Image resolution is to large'),
-    ]
+    ],
   ]);
 }
 
@@ -134,9 +134,12 @@ if (move_uploaded_file($image['tmp_name'], $filename))
   $imageUrl = str_replace('./', '/', $filename);
 
   if ($response = firebase([
-    'title' => isset($_POST['title']) ? htmlentities($_POST['title']) : '',
-    'url'   => $imageUrl,
-  ]))
+    'title'      => isset($_POST['title']) ? htmlentities($_POST['title']) : '',
+    'url'        => $imageUrl,
+    'timestamp'  => time(),
+    'created_at' => date('c'),
+  ])
+  )
   {
     if (isset($response['name']) && !empty($response['name']))
     {
@@ -148,10 +151,10 @@ if (move_uploaded_file($image['tmp_name'], $filename))
       $postCount = 'leeeeegggg';
     }
     showResult([
-      'image' => [
+      'image'     => [
         'src' => $imageUrl,
       ],
-      'firebase' => $response,
+      'firebase'  => $response,
       'postcount' => $postCount,
     ]);
   }
