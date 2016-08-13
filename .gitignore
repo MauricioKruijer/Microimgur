@@ -16,4 +16,6 @@ bootstrap/cache/
 .rocketeer/
 
 uploads/
+exports/
+
 /.idea/workspace.xml

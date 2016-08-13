@@ -31,7 +31,7 @@ $posts = firebase([], 'files', 'GET', ['orderBy'=> '"timestamp"']);
   <div id="topBar">
     <div class="wrapper">
       <span class="pt-m left">Posts: <?=$postCount?></span>
-      <button class="mt-m">export</button>
+      <button class="mt-m" onclick="window.location = 'exportcsv.php';">export</button>
       <span class="pt-m right">Views: <?=$viewCount?></span>
     </div>
   </div>
