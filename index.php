@@ -15,7 +15,6 @@ firebase(['page_views' => ++$viewCount], 'analytics', 'PATCH');
 
 $posts = firebase([], 'files', 'GET', ['orderBy'=> '"timestamp"']);
 ?>
-
 <!doctype html>
 <html class="no-js" lang="">
 <head>
@@ -75,7 +74,9 @@ $posts = firebase([], 'files', 'GET', ['orderBy'=> '"timestamp"']);
   <script>
     var uploadElem = document.querySelector('input[type=file]');
     uploadElem.onchange = function () {
-      uploadElem.form.submit();
+      if(confirm("you sure?")) {
+        uploadElem.form.submit();
+      }
     };
 
     // Initialize Firebase
@@ -107,18 +108,18 @@ $posts = firebase([], 'files', 'GET', ['orderBy'=> '"timestamp"']);
     posts.startAt(timestamp).limitToLast(1);
     posts.on('value', function (snap) {
       var newPosts = snap.val();
-      for (var postId in newPosts) {
+      Object.keys(newPosts).forEach(function(postId) {
         appendPost(newPosts[postId]);
-      }
+      });
     });
 
     function appendPost(post) {
       var sectionElem = document.createElement('section');
 
-      var img = document.createElement('img');
-      img.src = post.url;
+      var img   = document.createElement('img');
+      img.src   = post.url;
       img.width = '720';
-      img.alt = '';
+      img.alt   = '';
 
       if (post.title.length > 0) {
         var h2 = document.createElement('h2');
