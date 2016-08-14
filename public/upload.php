@@ -1,7 +1,5 @@
 <?php
-define('MAX_IMAGE_WIDTH', 1920);
-define('MAX_IMAGE_HEIGHT', 1080);
-define('MAX_FILE_SIZE', 2048 * 1024);
+
 
 require_once 'helpers.php';
 require_once 'firebase.php';
