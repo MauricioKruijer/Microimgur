@@ -1,116 +1,84 @@
 <?php
-
-
-require_once 'helpers.php';
-require_once 'firebase.php';
-
-if (!isset($_FILES['image']))
+require __DIR__ . '/../bootstrap/autoload.php';
+try
 {
-  showResult([
-    'error' => [
-      'message' => _('No file found'),
-    ],
-  ]);
+  $imageUpload = new FileUpload('image');
+  if ($imageUpload->validateErrorCode())
+  {
+
+    $imageUpload->validateSize();
+    $imageUpload->validateName();
+
+    $imageUpload->readFileInfo();
+
+    $imageUpload->validateMimeType();
+    $imageUpload->validateResolution();
+
+    do
+    {
+      $filename = randomFilename();
+    }
+    while (file_exists($filename));
+
+    if ($imageUpload->saveFile($filename))
+    {
+      $title = isset($_POST['title']) ? htmlentities($_POST['title']) : '';
+
+      if (list($postCount, $imageUrl, $response) = saveImageToFirebase($filename, $title))
+      {
+        header('Location: ' . URL);
+        exit;
+//        showResult([
+//          'image'     => [
+//            'src' => $imageUrl,
+//          ],
+//          'firebase'  => $response,
+//          'postcount' => $postCount,
+//        ]);
+      }
+
+      showResult([
+        'error' => [
+          'message' => _('Something went wrong g!'),
+        ],
+      ]);
+    }
+  }
+}
+catch (RuntimeException $e)
+{
+  showResult(['error' => $e->getMessage()]);
 }
 
-$image = $_FILES['image'];
-
-if (($fileInfo = @getimagesize($image['tmp_name'])) == false)
+if (!function_exists('_'))
 {
-  showResult([
-    'error' => [
-      'message' => _('File info is not available, could not check image'),
-    ],
-  ]);
+  function _($v)
+  {
+    return $v;
+  }
 }
 
-if ($fileInfo[0] > MAX_IMAGE_WIDTH && $fileInfo[1] > MAX_IMAGE_HEIGHT)
+function saveImageToFirebase($filename, $title)
 {
-  showResult([
-    'error' => [
-      'message' => _('Image resolution is to large'),
-    ],
-  ]);
-}
-
-if (!isset($fileInfo['mime']) || !in_array($fileInfo['mime'], ['image/jpeg', 'image/jpg']))
-{
-  showResult([
-    'error' => [
-      'message' => gettext('Type not supported'),
-    ],
-  ]);
-}
-
-if (isset($image['size']) && $image['size'] > MAX_FILE_SIZE)
-{
-  showResult([
-    'error' => _(sprintf(
-      'This file is too big (%s), max file size is: %s',
-      human_filesize($image['size']),
-      human_filesize(MAX_FILE_SIZE))),
-  ]);
-}
-
-if (!empty($image['error']))
-{
-  showResult([
-    'error' => [
-      'message' => _('Something went wrong while uploading your file'),
-    ],
-  ]);
-}
-
-if (empty($image['name']))
-{
-  showResult([
-    'error' => [
-      'message' => _('Image must have a name'),
-    ],
-  ]);
-}
-
-do
-{
-  $filename = randomFilename();
-}
-while (file_exists($filename));
-
-if (move_uploaded_file($image['tmp_name'], $filename))
-{
-  $imageUrl = str_replace('./', '/', $filename);
-
-  if ($response = firebase([
-    'title'      => isset($_POST['title']) ? htmlentities($_POST['title']) : '',
-    'url'        => $imageUrl,
-    'timestamp'  => time(),
+  $imageUrl  = str_replace('./', '/', $filename);
+  $image     = [
+    'title'      => $title,
+    'url'       => $imageUrl,
+    'timestamp' => time(),
     'created_at' => date('c'),
-  ])
-  )
+  ];
+
+  if ($response = firebase($image))
   {
     if (isset($response['name']) && !empty($response['name']))
     {
       $postCount = firebase([], 'analytics/post_count', 'GET');
       firebase(['post_count' => ++$postCount], 'analytics', 'PATCH');
+      return [$postCount, $imageUrl, $response];
     }
-    else
-    {
-      $postCount = 'leeeeegggg';
-    }
-    showResult([
-      'image'     => [
-        'src' => $imageUrl,
-      ],
-      'firebase'  => $response,
-      'postcount' => $postCount,
-    ]);
   }
   else
   {
-    showResult([
-      'error' => [
-        'message' => _('Something went wrong g!'),
-      ],
-    ]);
+    return false;
   }
 }
