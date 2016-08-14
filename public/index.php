@@ -1,5 +1,6 @@
 <?php
-require_once 'firebase.php';
+require __DIR__ . '/../bootstrap/autoload.php';
+
 $analytics = firebase([], 'analytics', 'GET');
 if (!empty($analytics))
 {
