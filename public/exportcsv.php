@@ -1,4 +1,6 @@
 <?php
+require __DIR__ . '/../bootstrap/autoload.php';
+
 $filename = randomKeys(10, 'int') . '.csv';
 $file     = sprintf('./exports/%s', $filename);
 $fp       = fopen($file, 'w');
