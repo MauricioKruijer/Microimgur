@@ -1,4 +1,8 @@
 <?php
+namespace Microimgur;
+
+use RuntimeException;
+
 require_once __DIR__ . '/FileUploadInterface.php';
 
 class FileUpload implements FileUploadInterface
