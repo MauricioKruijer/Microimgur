@@ -1,4 +1,6 @@
 <?php
+namespace Microimgur;
+
 require __DIR__ . '/../bootstrap/autoload.php';
 try
 {

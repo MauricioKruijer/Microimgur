@@ -1,0 +1,7 @@
+<phpunit bootstrap="./bootstrap.php" colors="true">
+    <testsuites name="FileUpload Test Suite">
+        <testsuite>
+            <directory>.</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

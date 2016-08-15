@@ -1,4 +1,6 @@
 <?php
+namespace Microimgur;
+
 interface FileUploadInterface
 {
   /**
