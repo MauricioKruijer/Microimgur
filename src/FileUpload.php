@@ -98,7 +98,13 @@ class FileUpload implements FileUploadInterface
   {
     if ($this->hasFile() && ($this->fileInfo[0] > self::MAX_WIDTH && $this->fileInfo[1] > self::MAX_HEIGHT))
     {
-      throw new RuntimeException(_('Image resolution is to large'));
+      throw new RuntimeException(sprintf(
+          _('Image resolution is to large (%s*%s), max file size is: %s*%s'),
+          $this->fileInfo[0],
+          $this->fileInfo[1],
+          self::MAX_WIDTH,
+          self::MAX_HEIGHT)
+      );
     }
 
     return true;
