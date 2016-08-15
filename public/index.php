@@ -106,12 +106,11 @@ $posts = firebase([], 'files', 'GET', ['orderBy'=> '"timestamp"']);
 
     var posts = database.ref('files');
     posts.orderByChild('timestamp');
-    posts.startAt(timestamp).limitToLast(1);
-    posts.on('value', function (snap) {
-      var newPosts = snap.val();
-      Object.keys(newPosts).forEach(function(postId) {
-        appendPost(newPosts[postId]);
-      });
+    posts.startAt(timestamp);
+    posts.limitToLast(1);
+
+    posts.on('child_added', function (snap) {
+      appendPost(snap.val());
     });
 
     function appendPost(post) {
