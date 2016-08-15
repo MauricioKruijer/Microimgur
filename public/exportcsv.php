@@ -1,7 +1,4 @@
 <?php
-require_once 'helpers.php';
-require_once 'firebase.php';
-
 $filename = randomKeys(10, 'int') . '.csv';
 $file     = sprintf('./exports/%s', $filename);
 $fp       = fopen($file, 'w');
@@ -15,7 +12,7 @@ if (!empty($posts))
 
   foreach ($posts as $key => $post)
   {
-    $fields = [$key, $post['url'], $post['title']];
+    $fields = [$key, URL . $post['url'], $post['title']];
     fputcsv($fp, $fields, ';');
   }
 
