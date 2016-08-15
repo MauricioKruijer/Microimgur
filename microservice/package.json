@@ -1,0 +1,26 @@
+{
+  "name": "microimgur",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "exceljs": "^0.2.13",
+    "firebase": "^3.2.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MauricioKruijer/Microimgur.git"
+  },
+  "author": "Mauricio Kruijer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MauricioKruijer/Microimgur/issues"
+  },
+  "homepage": "https://github.com/MauricioKruijer/Microimgur#readme",
+  "private": true
+}
